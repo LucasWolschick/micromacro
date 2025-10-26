@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI):
     await db.disconnect()
 
 
-app = FastAPI(lifespan=lifespan, port=settings.port)
+app = FastAPI(lifespan=lifespan)
 
 
 @app.middleware("http")

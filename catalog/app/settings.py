@@ -12,7 +12,6 @@ class Settings(BaseSettings):
 
     connection_string: str
     db_name: str
-    port: int
 
     log: int | str = logging.INFO
 
