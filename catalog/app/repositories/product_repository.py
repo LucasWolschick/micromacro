@@ -2,8 +2,9 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from app.db.connection import ConnectionPool
-from app.db.deps import get_db
+from common.db.connection import ConnectionPool
+from common.db.deps import get_db
+
 from app.core.product import Product
 
 

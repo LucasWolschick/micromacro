@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 import asyncpg
 import logging
@@ -17,10 +18,19 @@ class ConnectionPool:
 
     async def connect(self):
         assert self.pool is None
-        await self._ensure_database()
-        self.pool = await asyncpg.create_pool(f"{self.connection_string}{self.db_name}")
-        logger.info(f"Connected successfully to {self.db_name}")
-        await self._sync_migrations()
+
+        while True:
+            try:
+                await self._ensure_database()
+                self.pool = await asyncpg.create_pool(
+                    f"{self.connection_string}{self.db_name}"
+                )
+                logger.info(f"Connected successfully to {self.db_name}")
+                await self._sync_migrations()
+                return
+            except ConnectionRefusedError:
+                logger.warning("db not up yet...")
+                await asyncio.sleep(3)
 
     async def disconnect(self):
         assert self.pool is not None

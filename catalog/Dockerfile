@@ -1,10 +1,14 @@
 FROM python:3.13-slim
-
 WORKDIR /app
 
-COPY requirements.txt .
+COPY ./common /app/common
+
+WORKDIR /app/catalog
+COPY ./catalog/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY ./catalog /app/catalog
 
-CMD ["fastapi", "run", "app/main.py", "--port", "8000"]
+WORKDIR /app/catalog
+
+CMD ["fastapi", "run", "app/main.py", "--host", "0.0.0.0", "--port", "8000"]

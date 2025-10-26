@@ -4,8 +4,9 @@ from fastapi import FastAPI, Request, Response
 from fastapi.concurrency import asynccontextmanager
 from fastapi.responses import JSONResponse
 
-from app.db.connection import ConnectionPool
-from app.db.deps import set_db_instance
+from common.db.connection import ConnectionPool
+from common.db.deps import set_db_instance
+
 from app.exceptions import ApplicationException, NotFoundException
 from app.api import product_router
 from app.settings import settings

@@ -1,11 +1,15 @@
 version: "3.9"
 services:
   catalog:
-    build: .
+    build:
+      context: .
+      dockerfile: ./catalog/Dockerfile
     environment:
       ENV: prod
     ports:
-      - "8000:8000"
+      - "8001:8000"
+    volumes:
+      - ./catalog:/app/catalog
     depends_on:
       - catalog_db
 
@@ -16,7 +20,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: catalog_db
     volumes:
-      - catalog-db-data:/var/lib/postgresql/data
+      - catalog-db-data:/var/lib/postgresql
 
 volumes:
   catalog-db-data:

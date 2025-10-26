@@ -1,10 +1,11 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
 
-from app.db.deps import get_db
+from common.db.deps import get_db
+from common.db.connection import ConnectionPool
+
 from app.repositories.product_repository import ProductRepository
 from app.use_cases.add_product import AddProduct, AddProductRequest
-from app.db.connection import ConnectionPool
 from app.use_cases.get_product import GetProduct, GetProductResponse
 from app.use_cases.list_products import ListProducts, ListedProductModel
 
