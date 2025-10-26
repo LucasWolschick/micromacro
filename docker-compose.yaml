@@ -22,5 +22,28 @@ services:
     volumes:
       - catalog-db-data:/var/lib/postgresql
 
+  inventory:
+    build:
+      context: .
+      dockerfile: ./inventory/Dockerfile
+    environment:
+      ENV: prod
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./inventory:/app/inventory
+    depends_on:
+      - inventory_db
+
+  inventory_db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: inventory_db
+    volumes:
+      - inventory-db-data:/var/lib/postgresql
+
 volumes:
   catalog-db-data:
+  inventory-db-data:
