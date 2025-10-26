@@ -11,14 +11,12 @@ from app.core.product import Product
 class AddProductRequest(BaseModel):
     description: str
     price: Decimal
-    stock: Decimal = Decimal("0")
 
 
 class AddProductResponse(BaseModel):
     id: int
     description: str
     price: Decimal
-    stock: Decimal
 
 
 class AddProduct:
@@ -30,9 +28,6 @@ class AddProduct:
             id=0,
             description=request.description,
             price=request.price,
-            stock=request.stock,
         )
         r = await self.product_repository.insert(p)
-        return AddProductResponse(
-            id=r.id, description=r.description, price=r.price, stock=r.stock
-        )
+        return AddProductResponse(id=r.id, description=r.description, price=r.price)

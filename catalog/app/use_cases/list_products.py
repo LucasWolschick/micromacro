@@ -11,7 +11,6 @@ class ListedProductModel(BaseModel):
     id: int
     description: str
     price: Decimal
-    stock: Decimal
 
 
 class ListProducts:
@@ -21,8 +20,6 @@ class ListProducts:
     async def run(self) -> list[ListedProductModel]:
         products = await self.product_repository.list()
         return [
-            ListedProductModel(
-                id=p.id, description=p.description, price=p.price, stock=p.stock
-            )
+            ListedProductModel(id=p.id, description=p.description, price=p.price)
             for p in products
         ]

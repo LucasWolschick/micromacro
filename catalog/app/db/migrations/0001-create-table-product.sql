@@ -1,4 +1,4 @@
-CREATE TABLE product (
+CREATE TABLE products (
     id SERIAL PRIMARY KEY NOT NULL,
     description VARCHAR(1000) NOT NULL,
     price NUMERIC NOT NULL,

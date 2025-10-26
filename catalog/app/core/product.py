@@ -7,4 +7,3 @@ class Product:
     id: int
     description: str
     price: Decimal
-    stock: Decimal
