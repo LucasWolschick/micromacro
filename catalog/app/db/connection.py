@@ -17,6 +17,7 @@ class ConnectionPool:
 
     async def connect(self):
         assert self.pool is None
+        await self._ensure_database()
         self.pool = await asyncpg.create_pool(f"{self.connection_string}{self.db_name}")
         logger.info(f"Connected successfully to {self.db_name}")
         await self._sync_migrations()
@@ -33,6 +34,15 @@ class ConnectionPool:
             yield conn
         finally:
             await self.pool.release(conn)
+
+    async def _ensure_database(self):
+        try:
+            conn = await asyncpg.connect(f"{self.connection_string}{self.db_name}")
+            await conn.close()
+        except asyncpg.InvalidCatalogNameError:
+            conn = await asyncpg.connect(f"{self.connection_string}")
+            await conn.execute(f'CREATE DATABASE "{self.db_name}"')
+            await conn.close()
 
     async def _sync_migrations(self):
         assert self.pool
