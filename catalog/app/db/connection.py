@@ -10,15 +10,14 @@ logger = logging.getLogger(__name__)
 class ConnectionPool:
     pool: asyncpg.Pool | None
 
-    def __init__(self, db_name: str):
+    def __init__(self, connection_string: str, db_name: str):
         self.pool = None
+        self.connection_string = connection_string
         self.db_name = db_name
 
     async def connect(self):
         assert self.pool is None
-        self.pool = await asyncpg.create_pool(
-            f"postgresql://postgres:postgres@{self.db_name}:5432/{self.db_name}"
-        )
+        self.pool = await asyncpg.create_pool(f"{self.connection_string}{self.db_name}")
         logger.info(f"Connected successfully to {self.db_name}")
         await self._sync_migrations()
 

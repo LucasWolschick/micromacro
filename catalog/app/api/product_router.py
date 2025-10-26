@@ -5,8 +5,8 @@ from app.db.deps import get_db
 from app.repositories.product_repository import ProductRepository
 from app.use_cases.add_product import AddProduct, AddProductRequest
 from app.db.connection import ConnectionPool
-from catalog.app.use_cases.get_product import GetProduct, GetProductResponse
-from catalog.app.use_cases.list_products import ListProducts, ListedProductModel
+from app.use_cases.get_product import GetProduct, GetProductResponse
+from app.use_cases.list_products import ListProducts, ListedProductModel
 
 router = APIRouter(prefix="/products")
 

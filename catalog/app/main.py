@@ -8,11 +8,12 @@ from app.db.connection import ConnectionPool
 from app.db.deps import set_db_instance
 from app.exceptions import ApplicationException, NotFoundException
 from app.api import product_router
+from app.settings import settings
 
-db = ConnectionPool("catalog_db")
+db = ConnectionPool(settings.connection_string, settings.db_name)
 set_db_instance(db)
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=settings.log)
 
 
 @asynccontextmanager
@@ -22,7 +23,7 @@ async def lifespan(app: FastAPI):
     await db.disconnect()
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, port=settings.port)
 
 
 @app.middleware("http")
