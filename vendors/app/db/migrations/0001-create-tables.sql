@@ -1,0 +1,6 @@
+CREATE TABLE vendors (
+    id SERIAL PRIMARY KEY NOT NULL,
+    username TEXT UNIQUE NOT NULL,
+    "password" TEXT NOT NULL,
+    ssn VARCHAR(100) NOT NULL
+);
