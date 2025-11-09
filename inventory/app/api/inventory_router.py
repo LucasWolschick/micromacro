@@ -10,6 +10,7 @@ from app.repositories.warehouse_repository import WarehouseRepository
 from app.use_cases.list_stocks import ListStocksRequest, ListStocks
 from app.use_cases.list_warehouses import ListWarehouses
 from app.use_cases.set_stock import SetStock, SetStockRequest
+from app.use_cases.create_warehouse import CreateWarehouse, CreateWarehouseRequest
 
 router = APIRouter(prefix="/stocks")
 
@@ -19,6 +20,15 @@ async def list_warehouses(db: Annotated[ConnectionPool, Depends(get_db)]):
     warehouse_repo = WarehouseRepository(db)
     use_case = ListWarehouses(warehouse_repo)
     return await use_case.run()
+
+
+@router.post("/warehouses")
+async def create_warehouse(
+    db: Annotated[ConnectionPool, Depends(get_db)], warehouse: CreateWarehouseRequest
+):
+    warehouse_repo = WarehouseRepository(db)
+    use_case = CreateWarehouse(warehouse_repo)
+    return await use_case.run(warehouse)
 
 
 @router.get("/")

@@ -20,6 +20,16 @@ class WarehouseRepository:
 
         return result is not None
 
+    async def insert(self, warehouse: Warehouse) -> Warehouse:
+        sql = """INSERT INTO warehouses (description) VALUES ($1) RETURNING id, description;"""
+
+        async with self.db.get_conn() as conn:
+            result = await conn.fetchrow(sql, warehouse.description)
+
+        assert result is not None, "Error inserting warehouse"
+
+        return Warehouse(result["id"], result["description"])
+
     async def list(self) -> list[Warehouse]:
         sql = """SELECT id, description FROM warehouses;"""
 
