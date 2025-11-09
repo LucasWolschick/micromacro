@@ -7,3 +7,4 @@ class Product:
     id: int
     description: str
     price: Decimal
+    vendor_id: int

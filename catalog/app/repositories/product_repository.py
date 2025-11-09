@@ -13,7 +13,9 @@ class ProductRepository:
         self.db = db
 
     async def get(self, id: int) -> Product | None:
-        sql = """SELECT id, description, price FROM products WHERE id = $1;"""
+        sql = (
+            """SELECT id, description, price, vendor_id FROM products WHERE id = $1;"""
+        )
 
         async with self.db.get_conn() as conn:
             result = await conn.fetch(sql, id)
@@ -23,22 +25,29 @@ class ProductRepository:
 
         r, *_ = result
 
-        return Product(r["id"], r["description"], r["price"])
+        return Product(r["id"], r["description"], r["price"], r["vendor_id"])
 
     async def insert(self, product: Product) -> Product:
-        sql = """INSERT INTO products (description, price) VALUES ($1, $2) RETURNING id, description, price;"""
+        sql = """INSERT INTO products (description, price, vendor_id) VALUES ($1, $2, $3) RETURNING id, description, price, vendor_id;"""
 
         async with self.db.get_conn() as conn:
-            result = await conn.fetchrow(sql, product.description, product.price)
+            result = await conn.fetchrow(
+                sql, product.description, product.price, product.vendor_id
+            )
 
         assert result, "Failed to insert product"
 
-        return Product(result["id"], result["description"], result["price"])
+        return Product(
+            result["id"], result["description"], result["price"], result["vendor_id"]
+        )
 
     async def list(self) -> list[Product]:
-        sql = """SELECT id, description, price FROM products;"""
+        sql = """SELECT id, description, price, vendor_id FROM products;"""
 
         async with self.db.get_conn() as conn:
             result = await conn.fetch(sql)
 
-        return [Product(r["id"], r["description"], r["price"]) for r in result]
+        return [
+            Product(r["id"], r["description"], r["price"], r["vendor_id"])
+            for r in result
+        ]

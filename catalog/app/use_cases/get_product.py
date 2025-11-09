@@ -12,6 +12,7 @@ class GetProductResponse(BaseModel):
     id: int
     description: str
     price: Decimal
+    vendor_id: int
 
 
 class GetProduct:
@@ -28,4 +29,5 @@ class GetProduct:
             id=product.id,
             description=product.description,
             price=product.price,
+            vendor_id=product.vendor_id,
         )
