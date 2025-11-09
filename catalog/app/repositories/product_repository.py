@@ -26,7 +26,7 @@ class ProductRepository:
         return Product(r["id"], r["description"], r["price"])
 
     async def insert(self, product: Product) -> Product:
-        sql = """INSERT INTO products (description, price) VALUES ($1, $2, $3) RETURNING id, description, price;"""
+        sql = """INSERT INTO products (description, price) VALUES ($1, $2) RETURNING id, description, price;"""
 
         async with self.db.get_conn() as conn:
             result = await conn.fetchrow(sql, product.description, product.price)
