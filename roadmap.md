@@ -6,7 +6,7 @@ Here’s how you could evolve this step by step:
 
 ---
 
-## 1. Give the marketplace a purpose
+## 1. ~~Give the marketplace a purpose~~ ✅
 
 Let it act as the aggregator or frontend-facing façade — the API clients call, which internally coordinates the other services.
 
