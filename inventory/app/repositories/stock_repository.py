@@ -37,7 +37,9 @@ class StockRepository:
                 RETURNING *;"""
 
         async with self.db.get_conn() as conn:
-            result = await conn.fetchrow(sql, stock.product_id, stock.stock)
+            result = await conn.fetchrow(
+                sql, stock.product_id, stock.warehouse_id, stock.stock
+            )
 
         assert result, "Failed to set stock"
 
