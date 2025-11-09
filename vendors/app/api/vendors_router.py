@@ -29,9 +29,11 @@ async def authenticate(
     return await use_case.run(ValidateTokenRequest(token=SecretStr(token)))
 
 
-@router.get("/token/{token}")
-async def validate_token(db: Annotated[ConnectionPool, Depends(get_db)], token: str):
-    return await authenticate(db, token)
+@router.get("/token")
+async def who_am_i(
+    token: Annotated[ValidateTokenResponse, Depends(authenticate)],
+):
+    return token
 
 
 @router.post("/")
@@ -49,7 +51,7 @@ async def register_vendor(
 async def auth_vendor(
     db: Annotated[ConnectionPool, Depends(get_db)],
     credentials: Annotated[OAuth2PasswordRequestForm, Depends()],
-    _: Annotated[ValidateTokenResponse, Depends(validate_token)],
+    _: Annotated[ValidateTokenResponse, Depends(authenticate)],
 ):
     vendor_repository = VendorRepository(db)
     use_case = AuthVendor(vendor_repository)
