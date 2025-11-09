@@ -66,7 +66,30 @@ services:
     volumes:
       - vendors-db-data:/var/lib/postgresql
 
+  marketplace:
+    build:
+      context: .
+      dockerfile: ./marketplace/Dockerfile
+    environment:
+      ENV: prod
+    ports:
+      - "8004:8000"
+    volumes:
+      - ./marketplace:/app/marketplace
+    depends_on:
+      - marketplace_db
+
+  marketplace_db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: marketplace_db
+    volumes:
+      - marketplace-db-data:/var/lib/postgresql
+
 volumes:
   catalog-db-data:
   inventory-db-data:
   vendors-db-data:
+  marketplace-db-data:
