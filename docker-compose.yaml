@@ -44,6 +44,29 @@ services:
     volumes:
       - inventory-db-data:/var/lib/postgresql
 
+  vendors:
+    build:
+      context: .
+      dockerfile: ./vendors/Dockerfile
+    environment:
+      ENV: prod
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./vendors:/app/vendors
+    depends_on:
+      - vendors_db
+
+  vendors_db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: vendors_db
+    volumes:
+      - vendors-db-data:/var/lib/postgresql
+
 volumes:
   catalog-db-data:
   inventory-db-data:
+  vendors-db-data:
