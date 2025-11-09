@@ -3,12 +3,15 @@ from typing import Awaitable, Callable
 from fastapi import FastAPI, Request, Response
 from fastapi.concurrency import asynccontextmanager
 from fastapi.responses import JSONResponse
+import httpx
 
 from common.db.connection import ConnectionPool
 from common.db.deps import set_db_instance
 
-from app.exceptions import ApplicationException
+from app.exceptions import ApplicationException, NotFoundException
 from app.settings import settings
+from app.api import products_api
+from app.clients.deps import get_http_client, set_http_client
 
 db = ConnectionPool(settings.connection_string, settings.db_name)
 set_db_instance(db)
@@ -19,7 +22,9 @@ logging.basicConfig(level=settings.log)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await db.connect()
+    set_http_client(httpx.AsyncClient())
     yield
+    await get_http_client().aclose()
     await db.disconnect()
 
 
@@ -32,5 +37,10 @@ async def handle_exceptions(
 ) -> Response:
     try:
         return await call_next(request)
+    except NotFoundException as e:
+        return JSONResponse(status_code=404, content={"message": str(e)})
     except ApplicationException as e:
         return JSONResponse(status_code=400, content={"message": str(e)})
+
+
+app.include_router(products_api.router)
