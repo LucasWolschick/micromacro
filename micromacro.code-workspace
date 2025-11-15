@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "catalog"
+		},
+		{
+			"path": "common"
+		},
+		{
+			"path": "inventory"
+		},
+		{
+			"path": "marketplace"
+		},
+		{
+			"path": "vendors"
+		}
+	],
+	"settings": {
+		"python.autoComplete.extraPaths": ["./common"]
+	}
+}
