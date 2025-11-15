@@ -1,0 +1,1 @@
+podman run --rm -e RABBITMQ_DEFAULT_USER=user -e RABBITMQ_DEFAULT_PASS=user -p 15672:15672 -p 5672:5672 rabbitmq:4-management

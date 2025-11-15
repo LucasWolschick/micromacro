@@ -87,9 +87,20 @@ services:
       POSTGRES_DB: marketplace_db
     volumes:
       - marketplace-db-data:/var/lib/postgresql
+  
+  queues:
+    image: rabbitmq:4-management
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: user
+    ports:
+      - "8080:15672"
+    volumes:
+      - queue-data:/var/lib/rabbitmq
 
 volumes:
   catalog-db-data:
   inventory-db-data:
   vendors-db-data:
   marketplace-db-data:
+  queue-data:

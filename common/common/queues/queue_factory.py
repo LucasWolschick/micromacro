@@ -1,3 +1,4 @@
+from typing import Any, Awaitable, Callable
 import aio_pika
 from pydantic import BaseModel
 
@@ -18,9 +19,20 @@ class ReceiveQueue[Rx: BaseModel]:
         self.queue = queue
         self.rx_cls = rx_cls
 
-    async def recv(self):
-        async for message in self.queue:
-            yield self.rx_cls.model_validate_json(message.body.decode("utf-8"))
+    async def consume(
+        self,
+        callback: Callable[[Rx, Callable[..., Awaitable[None]]], Any],
+        no_ack: bool = True,
+    ):
+        async def inner(msg: aio_pika.abc.AbstractIncomingMessage):
+            async def ack():
+                if no_ack == False:
+                    await msg.ack()
+
+            rx = self.rx_cls.model_validate_json(msg.body.decode("utf-8"))
+            await callback(rx, ack)
+
+        await self.queue.consume(inner, no_ack=no_ack)
 
 
 class QueueFactory:
@@ -28,11 +40,12 @@ class QueueFactory:
         self.connection_string = connection_string
 
     async def connect(self):
-        self.connection = await aio_pika.connect_robust(self.connection_string)
+        self.connection = await aio_pika.connect(self.connection_string)
         self.channel = self.connection.channel()
+        await self.channel.initialize()
+        pass
 
     async def disconnect(self):
-        await self.channel.close()
         await self.connection.close()
 
     async def make_send_queue[Tx: BaseModel](self, queue_name: str):
