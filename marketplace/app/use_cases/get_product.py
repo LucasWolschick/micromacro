@@ -38,7 +38,7 @@ class GetProduct:
 
         for warehouse, productStocks in stocks.items():
             for productStock in productStocks:
-                if productStock.stock.is_zero():
+                if productStock.stock == 0.0:
                     continue
 
                 if productStock.product_id not in stocksFromProduct:
