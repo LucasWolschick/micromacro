@@ -51,7 +51,6 @@ async def register_vendor(
 async def auth_vendor(
     db: Annotated[ConnectionPool, Depends(get_db)],
     credentials: Annotated[OAuth2PasswordRequestForm, Depends()],
-    _: Annotated[ValidateTokenResponse, Depends(authenticate)],
 ):
     vendor_repository = VendorRepository(db)
     use_case = AuthVendor(vendor_repository)

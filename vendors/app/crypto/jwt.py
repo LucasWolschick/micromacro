@@ -7,7 +7,7 @@ from app.exceptions import NotAuthenticatedException
 
 def issue(vendor_id: int, duration: timedelta) -> str:
     token = jwt.encode(
-        {"sub": vendor_id, "exp": datetime.now() + duration},
+        {"sub": str(vendor_id), "exp": datetime.now() + duration},
         settings.jwt_secret,
         algorithm="HS256",
     )
@@ -17,7 +17,7 @@ def issue(vendor_id: int, duration: timedelta) -> str:
 def decode_vendor_id(token: str) -> int:
     try:
         payload = jwt.decode(token, settings.jwt_secret, algorithms=["HS256"])
-    except JWTError:
+    except JWTError as e:
         raise NotAuthenticatedException()
 
-    return payload["sub"]
+    return int(payload["sub"])

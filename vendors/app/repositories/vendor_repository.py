@@ -8,7 +8,7 @@ class VendorRepository:
 
     async def insert(self, vendor: Vendor) -> Vendor:
         sql = """
-            INSERT INTO vendors (username, password, ssn) VALUES ($1, $2, $3, $4) RETURNING (id, username, password, ssn);
+            INSERT INTO vendors (username, password, ssn) VALUES ($1, $2, $3) RETURNING *;
         """
 
         async with self.db.get_conn() as conn:
@@ -18,7 +18,9 @@ class VendorRepository:
 
         assert result != None, "Could not insert vendor"
 
-        return Vendor(result[0], result[1], result[2], result[3])
+        return Vendor(
+            result["id"], result["username"], result["password"], result["ssn"]
+        )
 
     async def get_by_id(self, id: int) -> Vendor:
         sql = """
@@ -30,19 +32,21 @@ class VendorRepository:
 
         assert result is not None, "Vendor not found"
 
-        return Vendor(result[0], result[1], result[2], result[3])
+        return Vendor(
+            result["id"], result["username"], result["password"], result["ssn"]
+        )
 
-    async def try_get_by_credentials(
-        self, username: str, password: str
-    ) -> Vendor | None:
+    async def try_get_by_username(self, username: str) -> Vendor | None:
         sql = """
-            SELECT id, username, password, ssn FROM vendors WHERE username = $1 AND password = $2;
+            SELECT id, username, password, ssn FROM vendors WHERE username = $1;
         """
 
         async with self.db.get_conn() as conn:
-            result = await conn.fetchrow(sql, username, password)
+            result = await conn.fetchrow(sql, username)
 
         if result is None:
             return None
 
-        return Vendor(result[0], result[1], result[2], result[3])
+        return Vendor(
+            result["id"], result["username"], result["password"], result["ssn"]
+        )

@@ -15,6 +15,7 @@ from app.exceptions import (
 )
 from app.settings import settings
 from app.api import vendors_router
+from app.seed import seed
 
 db = ConnectionPool(settings.connection_string, settings.db_name)
 set_db_instance(db)
@@ -25,6 +26,7 @@ logging.basicConfig(level=settings.log)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await db.connect()
+    await seed()
     yield
     await db.disconnect()
 

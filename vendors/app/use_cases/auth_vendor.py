@@ -20,9 +20,7 @@ class AuthVendor:
         self.vendor_repository = vendor_repository
 
     async def run(self, credentials: AuthVendorRequest) -> AuthVendorResponse:
-        vendor = await self.vendor_repository.try_get_by_credentials(
-            credentials.username, credentials.password
-        )
+        vendor = await self.vendor_repository.try_get_by_username(credentials.username)
 
         if vendor is None:
             raise NotAuthenticatedException()
