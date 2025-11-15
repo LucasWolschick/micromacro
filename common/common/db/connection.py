@@ -30,7 +30,7 @@ class ConnectionPool:
                 return
             except ConnectionRefusedError:
                 logger.warning("db not up yet...")
-                await asyncio.sleep(3)
+                await asyncio.sleep(1)
 
     async def disconnect(self):
         assert self.pool is not None

@@ -1,4 +1,6 @@
+import asyncio
 from typing import Any, Awaitable, Callable
+from venv import logger
 import aio_pika
 from pydantic import BaseModel
 
@@ -40,10 +42,15 @@ class QueueFactory:
         self.connection_string = connection_string
 
     async def connect(self):
-        self.connection = await aio_pika.connect(self.connection_string)
-        self.channel = self.connection.channel()
-        await self.channel.initialize()
-        pass
+        while True:
+            try:
+                self.connection = await aio_pika.connect(self.connection_string)
+                self.channel = self.connection.channel()
+                await self.channel.initialize()
+                return
+            except ConnectionRefusedError:
+                logger.warning("rabbitmq not up yet...")
+                await asyncio.sleep(1)
 
     async def disconnect(self):
         await self.connection.close()

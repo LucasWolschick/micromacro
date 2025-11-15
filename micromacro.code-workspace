@@ -20,6 +20,11 @@
 		}
 	],
 	"settings": {
-		"python.autoComplete.extraPaths": ["./common"]
+		"python.autoComplete.extraPaths": [
+			"C:\\Dev\\Python\\micromacro\\common"
+		],
+		"python.analysis.extraPaths": [
+			"C:\\Dev\\Python\\micromacro\\common"
+		]
 	}
 }
