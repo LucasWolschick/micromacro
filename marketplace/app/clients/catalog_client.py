@@ -1,4 +1,3 @@
-from decimal import Decimal
 from http import HTTPStatus
 from httpx import AsyncClient
 from pydantic import BaseModel
@@ -9,25 +8,25 @@ from app.exceptions import ProductNotFoundException
 
 class AddProductRequest(BaseModel):
     description: str
-    price: Decimal
+    price: float
 
 
 class AddProductResponse(BaseModel):
     id: int
     description: str
-    price: Decimal
+    price: float
 
 
 class GetProductResponse(BaseModel):
     id: int
     description: str
-    price: Decimal
+    price: float
 
 
 class ListedProductModel(BaseModel):
     id: int
     description: str
-    price: Decimal
+    price: float
 
 
 class CatalogClient:

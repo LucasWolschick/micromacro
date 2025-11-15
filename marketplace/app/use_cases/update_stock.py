@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from pydantic import BaseModel
 from app.clients.catalog_client import CatalogClient
 from app.clients.inventory_client import InventoryClient, SetStockRequest
@@ -8,7 +6,7 @@ from app.clients.inventory_client import InventoryClient, SetStockRequest
 class UpdateStockRequest(BaseModel):
     product_id: int
     warehouse_id: int
-    quantity: Decimal
+    quantity: float
 
 
 class UpdateStockResponse(UpdateStockRequest):

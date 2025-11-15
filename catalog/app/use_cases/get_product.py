@@ -1,4 +1,3 @@
-from decimal import Decimal
 from typing import Annotated
 
 from fastapi import Depends
@@ -11,7 +10,7 @@ from app.exceptions import ProductNotFoundException
 class GetProductResponse(BaseModel):
     id: int
     description: str
-    price: Decimal
+    price: float
     vendor_id: int
 
 

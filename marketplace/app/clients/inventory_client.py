@@ -1,4 +1,3 @@
-from decimal import Decimal
 import urllib.parse
 from httpx import AsyncClient
 from pydantic import BaseModel
@@ -16,7 +15,7 @@ class ListStocksRequest(BaseModel):
 
 class ListedStockModel(BaseModel):
     product_id: int
-    stock: Decimal
+    stock: float
 
 
 ListStocksResponse = dict[int, list[ListedStockModel]]
@@ -25,13 +24,13 @@ ListStocksResponse = dict[int, list[ListedStockModel]]
 class SetStockRequest(BaseModel):
     product_id: int
     warehouse_id: int
-    stock: Decimal = Decimal("0")
+    stock: float = 0.0
 
 
 class SetStockResponse(BaseModel):
     product_id: int
     warehouse_id: int
-    stock: Decimal
+    stock: float
 
 
 class InventoryClient:

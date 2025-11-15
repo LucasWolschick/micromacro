@@ -1,4 +1,3 @@
-from decimal import Decimal
 from pydantic import BaseModel
 from app.clients.catalog_client import CatalogClient
 from app.clients.inventory_client import InventoryClient, ListStocksRequest
@@ -6,18 +5,18 @@ from app.clients.inventory_client import InventoryClient, ListStocksRequest
 
 class WarehouseProductStock(BaseModel):
     warehouse: int
-    quantity: Decimal
+    quantity: float
 
 
 class ProductStock(BaseModel):
-    total_quantity: Decimal
+    total_quantity: float
     deposits: list[WarehouseProductStock]
 
 
 class ListedProduct(BaseModel):
     sku: int
     description: str
-    price: Decimal
+    price: float
     stock: ProductStock
 
 
@@ -37,7 +36,7 @@ class ListProducts:
         )
 
         stocksFromProduct: dict[int, list[WarehouseProductStock]] = {}
-        totalProductStock: dict[int, Decimal] = {}
+        totalProductStock: dict[int, float] = {}
 
         for warehouse, productStocks in stocks.items():
             for productStock in productStocks:
@@ -48,7 +47,7 @@ class ListProducts:
                     stocksFromProduct[productStock.product_id] = []
 
                 if productStock.product_id not in totalProductStock:
-                    totalProductStock[productStock.product_id] = Decimal("0")
+                    totalProductStock[productStock.product_id] = 0.0
 
                 stocksFromProduct[productStock.product_id].append(
                     WarehouseProductStock(
@@ -64,7 +63,7 @@ class ListProducts:
                 description=product.description,
                 price=product.price,
                 stock=ProductStock(
-                    total_quantity=totalProductStock.get(product.id, Decimal("0")),
+                    total_quantity=totalProductStock.get(product.id, 0.0),
                     deposits=stocksFromProduct.get(product.id, []),
                 ),
             )

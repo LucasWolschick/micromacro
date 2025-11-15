@@ -1,4 +1,3 @@
-from decimal import Decimal
 from typing import Annotated
 
 from fastapi import Depends
@@ -10,13 +9,13 @@ from app.core.product import Product
 
 class AddProductRequest(BaseModel):
     description: str
-    price: Decimal
+    price: float
 
 
 class AddProductResponse(BaseModel):
     id: int
     description: str
-    price: Decimal
+    price: float
     vendor_id: int
 
 

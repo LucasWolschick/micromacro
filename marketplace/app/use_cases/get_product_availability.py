@@ -1,21 +1,20 @@
-from decimal import Decimal
 from pydantic import BaseModel
 from app.clients.inventory_client import InventoryClient, ListStocksRequest
 
 
 class ProductQuote(BaseModel):
     warehouse_id: int
-    quantity: Decimal
+    quantity: float
 
 
 class GetProductAvailabilityRequest(BaseModel):
     product_id: int
-    quantity_requested: Decimal
+    quantity_requested: float
 
 
 class GetProductAvailabilityResponse(BaseModel):
     product_id: int
-    quantity_requested: Decimal
+    quantity_requested: float
     available: bool
     quotes: list[ProductQuote]
 

@@ -1,4 +1,3 @@
-from decimal import Decimal
 from typing import Annotated
 
 from fastapi import Depends
@@ -10,7 +9,7 @@ from app.repositories.product_repository import ProductRepository
 class ListedProductModel(BaseModel):
     id: int
     description: str
-    price: Decimal
+    price: float
     vendor_id: int
 
 

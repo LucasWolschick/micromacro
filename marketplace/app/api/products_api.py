@@ -1,4 +1,3 @@
-from decimal import Decimal
 from typing import Annotated
 from fastapi import APIRouter, Body, Depends, Path, Query
 from httpx import AsyncClient
@@ -28,7 +27,7 @@ async def list_products(api_client: Annotated[AsyncClient, Depends(get_http_clie
 async def get_product_availability(
     api_client: Annotated[AsyncClient, Depends(get_http_client)],
     product_id: Annotated[int, Path(alias="id")],
-    quantity: Annotated[Decimal, Query()] = Decimal("0.0"),
+    quantity: Annotated[float, Query()] = 0.0,
 ):
     factory = ClientFactory(api_client)
     use_case = GetProductAvailability(factory.inventory())
@@ -44,7 +43,7 @@ async def update_stock(
     api_client: Annotated[AsyncClient, Depends(get_http_client)],
     product_id: Annotated[int, Path(alias="id")],
     warehouse_id: Annotated[int, Body()],
-    quantity: Annotated[Decimal, Body()],
+    quantity: Annotated[float, Body()],
 ):
     factory = ClientFactory(api_client)
     use_case = UpdateStock(factory.catalog(), factory.inventory())

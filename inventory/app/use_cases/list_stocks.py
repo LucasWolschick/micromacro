@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from pydantic import BaseModel
 
 from app.repositories.stock_repository import StockRepository
@@ -15,7 +13,7 @@ class ListStocksRequest(BaseModel):
 
 class ListedStockModel(BaseModel):
     product_id: int
-    stock: Decimal
+    stock: float
 
 
 ListStocksResponse = dict[int, list[ListedStockModel]]
