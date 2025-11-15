@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Body, Depends, Path, Query
 
 from common.db.deps import get_db
 from common.db.connection import ConnectionPool
@@ -46,9 +46,14 @@ async def list_stocks(
 
 @router.post("/{id}")
 async def set_stock(
-    request: SetStockRequest, db: Annotated[ConnectionPool, Depends(get_db)]
+    db: Annotated[ConnectionPool, Depends(get_db)],
+    product_id: Annotated[int, Path(alias="id")],
+    warehouse_id: Annotated[int, Body()],
+    stock: Annotated[float, Body()],
 ):
     stocks_repo = StockRepository(db)
     warehouse_repo = WarehouseRepository(db)
     use_case = SetStock(stocks_repo, warehouse_repo)
-    return await use_case.run(request)
+    return await use_case.run(
+        SetStockRequest(product_id=product_id, warehouse_id=warehouse_id, stock=stock)
+    )

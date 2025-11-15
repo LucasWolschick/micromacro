@@ -24,11 +24,11 @@ class UpdateStock:
         _ = await self.catalog_client.get_product(request.product_id)
 
         response = await self.inventory_client.set_stock(
+            request.product_id,
             SetStockRequest(
-                product_id=request.product_id,
                 warehouse_id=request.warehouse_id,
                 stock=request.quantity,
-            )
+            ),
         )
 
         return UpdateStockResponse(

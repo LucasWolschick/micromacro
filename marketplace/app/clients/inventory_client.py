@@ -22,9 +22,8 @@ ListStocksResponse = dict[int, list[ListedStockModel]]
 
 
 class SetStockRequest(BaseModel):
-    product_id: int
     warehouse_id: int
-    stock: float = 0.0
+    stock: float
 
 
 class SetStockResponse(BaseModel):
@@ -63,10 +62,13 @@ class InventoryClient:
             for (id, stocks) in response.json().items()
         }
 
-    async def set_stock(self, request: SetStockRequest) -> SetStockResponse:
-        url = urllib.parse.urljoin(self.base_url, f"{request.product_id}")
+    async def set_stock(
+        self, product_id: int, request: SetStockRequest
+    ) -> SetStockResponse:
+        url = urllib.parse.urljoin(self.base_url, f"/stocks/{product_id}")
 
         response = await self.client.post(url, json=request.model_dump())
+        print(response.json())
         response.raise_for_status()
 
         return SetStockResponse(**response.json())

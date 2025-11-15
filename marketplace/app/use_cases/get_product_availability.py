@@ -40,7 +40,9 @@ class GetProductAvailability:
         )
 
         quotes = [
-            quote for quote in all_quotes if quote.quantity > product.quantity_requested
+            quote
+            for quote in all_quotes
+            if quote.quantity >= product.quantity_requested
         ]
 
         available = len(quotes) > 0
