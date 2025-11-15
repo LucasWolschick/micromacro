@@ -19,7 +19,7 @@ class ConnectionPool:
     async def connect(self):
         assert self.pool is None
 
-        while True:
+        for _ in range(10):
             try:
                 await self._ensure_database()
                 self.pool = await asyncpg.create_pool(
@@ -31,6 +31,8 @@ class ConnectionPool:
             except ConnectionRefusedError:
                 logger.warning("db not up yet...")
                 await asyncio.sleep(1)
+
+        raise Exception("Could not connect to db")
 
     async def disconnect(self):
         assert self.pool is not None

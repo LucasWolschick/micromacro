@@ -2,6 +2,7 @@ import asyncio
 from typing import Any, Awaitable, Callable
 from venv import logger
 import aio_pika
+from aiormq import AMQPConnectionError
 from pydantic import BaseModel
 
 
@@ -42,15 +43,17 @@ class QueueFactory:
         self.connection_string = connection_string
 
     async def connect(self):
-        while True:
+        for _ in range(10):
             try:
                 self.connection = await aio_pika.connect(self.connection_string)
                 self.channel = self.connection.channel()
                 await self.channel.initialize()
                 return
-            except ConnectionRefusedError:
+            except AMQPConnectionError:
                 logger.warning("rabbitmq not up yet...")
                 await asyncio.sleep(1)
+
+        raise Exception("Could not connect to message queue")
 
     async def disconnect(self):
         await self.connection.close()
