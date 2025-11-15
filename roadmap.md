@@ -17,7 +17,7 @@ Start simple:
 
 So marketplace becomes your “composition layer.”
 
-## 2. Integrate vendor context
+## ~~2. Integrate vendor context~~ ✅
 
 If vendors are the ones adding products, link them together:
 

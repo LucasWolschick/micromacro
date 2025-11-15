@@ -17,13 +17,13 @@ class VendorsClient:
         self.client = client
 
     async def who_am_i(self, token: str):
-        url = urllib.parse.urljoin(self.base_url, "/token")
+        url = urllib.parse.urljoin(self.base_url, "/vendors/token")
 
         response = await self.client.get(
             url, headers={"Authorization": f"Bearer {token}"}
         )
 
-        if response.status_code == HTTPStatus.UNAUTHORIZED:
+        if response.status_code == HTTPStatus.FORBIDDEN:
             raise NotAuthenticatedException()
 
         response.raise_for_status()

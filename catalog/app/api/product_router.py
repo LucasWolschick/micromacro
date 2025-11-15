@@ -1,6 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
-from fastapi.security import HTTPBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from httpx import AsyncClient
 
 from common.db.deps import get_db
@@ -20,10 +20,10 @@ bearer = HTTPBearer()
 
 async def auth(
     client: Annotated[AsyncClient, Depends(get_http_client)],
-    token: Annotated[str, Depends(bearer)],
+    token: Annotated[HTTPAuthorizationCredentials, Depends(bearer)],
 ):
     vendors = ClientFactory(client).vendors()
-    return await vendors.who_am_i(token)
+    return await vendors.who_am_i(token.credentials)
 
 
 @router.post("/")
