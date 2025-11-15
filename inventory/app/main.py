@@ -6,7 +6,10 @@ from fastapi.responses import JSONResponse
 
 from common.db.connection import ConnectionPool
 from common.db.deps import set_db_instance
+from common.queues.queue_factory import QueueFactory
+from common.queues.deps import set_queue_factory
 
+from app.tasks.setup_tasks import setup_tasks
 from app.exceptions import ApplicationException, NotFoundException
 from app.api import inventory_router
 from app.settings import settings
@@ -14,13 +17,19 @@ from app.settings import settings
 db = ConnectionPool(settings.connection_string, settings.db_name)
 set_db_instance(db)
 
+queue_factory = QueueFactory(settings.queues_connection_string)
+set_queue_factory(queue_factory)
+
 logging.basicConfig(level=settings.log)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await db.connect()
+    await queue_factory.connect()
+    await setup_tasks()
     yield
+    await queue_factory.disconnect()
     await db.disconnect()
 
 

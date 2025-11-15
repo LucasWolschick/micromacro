@@ -17,7 +17,7 @@ Start simple:
 
 So marketplace becomes your “composition layer.”
 
-## ~~2. Integrate vendor context~~ ✅
+## 2. ~~Integrate vendor context~~ ✅
 
 If vendors are the ones adding products, link them together:
 
@@ -37,7 +37,7 @@ Currently, only vendors authenticate. The marketplace can:
 
 Later, you could move to a centralized Auth service or API gateway pattern.
 
-## 4. Expand inventory integration
+## 4. ~~Expand inventory integration~~ ✅
 
 Right now inventory is passive. You could:
 
@@ -46,7 +46,7 @@ Right now inventory is passive. You could:
   - `get_product_availability(product_id)` → proxies to `inventory.list_stocks`
   - `update_stock(product_id, warehouse_id, qty)` → admin/vendor operation
 
-## 5. Add cross-service events
+## 5. ~~Add cross-service events~~ ✅
 
 Introduce asynchronous communication (even in a lightweight way):
 

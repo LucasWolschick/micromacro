@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     connection_string: str
     db_name: str
 
+    queues_connection_string: str
+
     log: int | str = logging.INFO
 
 

@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     connection_string: str
     db_name: str
 
+    queues_connection_string: str
+
     vendors_api_url: HttpUrl
 
     log: int | str = logging.INFO

@@ -3,8 +3,11 @@ from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from httpx import AsyncClient
 
+from app.queues.product_created import product_created_queue
 from common.db.deps import get_db
 from common.db.connection import ConnectionPool
+from common.queues.deps import get_queue_factory
+from common.queues.queue_factory import QueueFactory
 
 from app.repositories.product_repository import ProductRepository
 from app.use_cases.add_product import AddProduct, AddProductRequest
@@ -31,9 +34,11 @@ async def add_product(
     vendor: Annotated[ValidateTokenResponse, Depends(auth)],
     product: AddProductRequest,
     db: Annotated[ConnectionPool, Depends(get_db)],
+    queue_factory: Annotated[QueueFactory, Depends(get_queue_factory)],
 ):
     repo = ProductRepository(db)
-    use_case = AddProduct(repo)
+    queue = await product_created_queue(queue_factory)
+    use_case = AddProduct(repo, queue)
     return await use_case.run(product, vendor.id)
 
 

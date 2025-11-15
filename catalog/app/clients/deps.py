@@ -3,9 +3,9 @@ from httpx import AsyncClient
 _http_client: AsyncClient | None = None
 
 
-def set_http_client(db: AsyncClient):
+def set_http_client(http_client: AsyncClient):
     global _http_client
-    _http_client = db
+    _http_client = http_client
 
 
 def get_http_client() -> AsyncClient:
