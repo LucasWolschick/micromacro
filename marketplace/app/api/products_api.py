@@ -1,11 +1,17 @@
+from decimal import Decimal
 from typing import Annotated
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Body, Depends, Path, Query
 from httpx import AsyncClient
 
 from app.clients.deps import get_http_client
+from app.use_cases.get_product_availability import (
+    GetProductAvailability,
+    GetProductAvailabilityRequest,
+)
 from app.use_cases.list_products import ListProducts
 from app.use_cases.get_product import GetProduct
 from app.clients.client_factory import ClientFactory
+from app.use_cases.update_stock import UpdateStock, UpdateStockRequest
 
 
 router = APIRouter()
@@ -16,6 +22,37 @@ async def list_products(api_client: Annotated[AsyncClient, Depends(get_http_clie
     factory = ClientFactory(api_client)
     use_case = ListProducts(factory.catalog(), factory.inventory())
     return await use_case.run()
+
+
+@router.get("/products/{id}/stock")
+async def get_product_availability(
+    api_client: Annotated[AsyncClient, Depends(get_http_client)],
+    product_id: Annotated[int, Path(alias="id")],
+    quantity: Annotated[Decimal, Query()] = Decimal("0.0"),
+):
+    factory = ClientFactory(api_client)
+    use_case = GetProductAvailability(factory.inventory())
+    return await use_case.run(
+        GetProductAvailabilityRequest(
+            product_id=product_id, quantity_requested=quantity
+        )
+    )
+
+
+@router.put("/products/{id}/stock")
+async def update_stock(
+    api_client: Annotated[AsyncClient, Depends(get_http_client)],
+    product_id: Annotated[int, Path(alias="id")],
+    warehouse_id: Annotated[int, Body()],
+    quantity: Annotated[Decimal, Body()],
+):
+    factory = ClientFactory(api_client)
+    use_case = UpdateStock(factory.catalog(), factory.inventory())
+    return await use_case.run(
+        UpdateStockRequest(
+            product_id=product_id, warehouse_id=warehouse_id, quantity=quantity
+        )
+    )
 
 
 @router.get("/products/{id}")

@@ -71,3 +71,13 @@ If you want a concrete milestone plan:
 3. Add stock sync between products and inventory (step 4)
 4. Implement async events (step 5)
 5. Expand features (search, ordering, etc.)
+
+---
+
+Other features:
+
+- Automated unit testing for all use cases
+- Secure all endpoints
+- Basic front-end that uses marketplace as a BFF
+- CI and automatic build generation
+- CD and deployment to a cloud service or VPS of mine
