@@ -3,6 +3,7 @@ from typing import Awaitable, Callable
 from fastapi import FastAPI, Request, Response
 from fastapi.concurrency import asynccontextmanager
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import httpx
 
 from common.db.connection import ConnectionPool
@@ -14,7 +15,7 @@ from app.exceptions import (
     NotFoundException,
 )
 from app.settings import settings
-from app.api import health_router, products_api
+from app.api import health_router, inventory_api, products_api
 from app.clients.deps import get_http_client, set_http_client
 
 db = ConnectionPool(settings.connection_string, settings.db_name)
@@ -34,6 +35,23 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+origins = [
+    "http://localhost",
+    "https://localhost",
+    "http://localhost:5173",
+    "https://localhost:5173",
+    "http://localhost:8080",
+    "https://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.middleware("http")
 async def handle_exceptions(
@@ -51,3 +69,4 @@ async def handle_exceptions(
 
 app.include_router(health_router.router)
 app.include_router(products_api.router)
+app.include_router(inventory_api.router)

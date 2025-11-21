@@ -32,6 +32,15 @@ class SetStockResponse(BaseModel):
     stock: float
 
 
+class AddWarehouseRequest(BaseModel):
+    description: str
+
+
+class AddWarehouseResponse(BaseModel):
+    id: int
+    description: str
+
+
 class InventoryClient:
     def __init__(self, base_url: str, client: AsyncClient):
         self.base_url = base_url
@@ -73,7 +82,20 @@ class InventoryClient:
         response = await self.client.post(
             url, json=request.model_dump(), headers={"Authorization": f"Bearer {token}"}
         )
-        print(response.json())
         response.raise_for_status()
 
         return SetStockResponse(**response.json())
+
+    async def add_warehouse(
+        self,
+        token: str,
+        request: AddWarehouseRequest,
+    ) -> AddWarehouseResponse:
+        url = urllib.parse.urljoin(self.base_url, f"/stocks/warehouses")
+
+        response = await self.client.post(
+            url, json=request.model_dump(), headers={"Authorization": f"Bearer {token}"}
+        )
+        response.raise_for_status()
+
+        return AddWarehouseResponse(**response.json())
