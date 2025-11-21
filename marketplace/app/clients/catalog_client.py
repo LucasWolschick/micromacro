@@ -15,6 +15,7 @@ class AddProductResponse(BaseModel):
     id: int
     description: str
     price: float
+    vendor_id: int
 
 
 class GetProductResponse(BaseModel):
@@ -34,10 +35,14 @@ class CatalogClient:
         self.base_url = base_url
         self.client = client
 
-    async def add_product(self, product: AddProductRequest) -> AddProductResponse:
+    async def add_product(
+        self, token: str, product: AddProductRequest
+    ) -> AddProductResponse:
         url = urllib.parse.urljoin(self.base_url, "/products")
 
-        response = await self.client.post(url, json=product.model_dump())
+        response = await self.client.post(
+            url, json=product.model_dump(), headers={"Authorization": f"Bearer {token}"}
+        )
         response.raise_for_status()
 
         return AddProductResponse(**response.json())

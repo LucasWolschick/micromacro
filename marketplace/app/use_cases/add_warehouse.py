@@ -20,4 +20,4 @@ class AddWarehouse:
         result = await self.inventory_client.add_warehouse(
             token, inventory_client.AddWarehouseRequest(description=request.description)
         )
-        return result
+        return AddWarehouseResponse(id=result.id, description=result.description)

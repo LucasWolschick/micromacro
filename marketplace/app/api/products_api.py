@@ -4,6 +4,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from httpx import AsyncClient
 
 from app.clients.deps import get_http_client
+from app.use_cases.add_product import AddProduct, AddProductRequest
 from app.use_cases.get_product_availability import (
     GetProductAvailability,
     GetProductAvailabilityRequest,
@@ -68,3 +69,14 @@ async def get_product(
     factory = ClientFactory(api_client)
     use_case = GetProduct(factory.catalog(), factory.inventory())
     return await use_case.run(product_id)
+
+
+@router.post("/products")
+async def add_product(
+    api_client: Annotated[AsyncClient, Depends(get_http_client)],
+    token: Annotated[HTTPAuthorizationCredentials, Depends(bearer)],
+    request: AddProductRequest,
+):
+    factory = ClientFactory(api_client)
+    use_case = AddProduct(factory.catalog())
+    return await use_case.run(token.credentials, request)
