@@ -1,4 +1,6 @@
 FROM python:3.13-slim
+RUN apt-get update && apt-get install -y curl
+
 WORKDIR /app
 
 COPY ./common /app/common
@@ -12,3 +14,6 @@ COPY ./inventory /app/inventory
 WORKDIR /app/inventory
 
 CMD ["fastapi", "run", "app/main.py", "--host", "0.0.0.0", "--port", "8000"]
+
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 \
+    CMD curl -f https://localhost:8000/health || exit 1

@@ -16,7 +16,7 @@ from app.exceptions import (
     NotAuthenticatedException,
     NotFoundException,
 )
-from app.api import product_router
+from app.api import health_router, product_router
 from app.settings import settings
 
 db = ConnectionPool(settings.connection_string, settings.db_name)
@@ -56,4 +56,5 @@ async def handle_exceptions(
         return JSONResponse(status_code=400, content={"message": str(e)})
 
 
+app.include_router(health_router.router)
 app.include_router(product_router.router)

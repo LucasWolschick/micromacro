@@ -11,7 +11,7 @@ from common.queues.deps import set_queue_factory
 
 from app.tasks.setup_tasks import setup_tasks
 from app.exceptions import ApplicationException, NotFoundException
-from app.api import inventory_router
+from app.api import health_router, inventory_router
 from app.settings import settings
 
 db = ConnectionPool(settings.connection_string, settings.db_name)
@@ -48,4 +48,5 @@ async def handle_exceptions(
         return JSONResponse(status_code=400, content={"message": str(e)})
 
 
+app.include_router(health_router.router)
 app.include_router(inventory_router.router)

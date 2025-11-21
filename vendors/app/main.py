@@ -14,7 +14,7 @@ from app.exceptions import (
     NotFoundException,
 )
 from app.settings import settings
-from app.api import vendors_router
+from app.api import health_router, vendors_router
 from app.seed import seed
 
 db = ConnectionPool(settings.connection_string, settings.db_name)
@@ -50,4 +50,5 @@ async def handle_exceptions(
         return JSONResponse(status_code=400, content={"message": str(e)})
 
 
+app.include_router(health_router.router)
 app.include_router(vendors_router.router)
