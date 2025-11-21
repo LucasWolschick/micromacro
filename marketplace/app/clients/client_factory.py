@@ -1,5 +1,6 @@
 from httpx import AsyncClient
 
+from app.clients.vendors_client import VendorsClient
 from app.settings import settings
 
 from .inventory_client import InventoryClient
@@ -25,3 +26,11 @@ class ClientFactory:
             )
 
         return self.inventory_client
+
+    def vendors(self):
+        if not hasattr(self, "vendors_client"):
+            self.vendors_client = VendorsClient(
+                settings.vendors_api_url.encoded_string(), self.client
+            )
+
+        return self.vendors_client

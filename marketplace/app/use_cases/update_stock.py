@@ -20,11 +20,12 @@ class UpdateStock:
         self.catalog_client = catalog_client
         self.inventory_client = inventory_client
 
-    async def run(self, request: UpdateStockRequest):
+    async def run(self, request: UpdateStockRequest, token: str):
         _ = await self.catalog_client.get_product(request.product_id)
 
         response = await self.inventory_client.set_stock(
             request.product_id,
+            token,
             SetStockRequest(
                 warehouse_id=request.warehouse_id,
                 stock=request.quantity,

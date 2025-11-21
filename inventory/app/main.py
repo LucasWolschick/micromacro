@@ -3,14 +3,20 @@ from typing import Awaitable, Callable
 from fastapi import FastAPI, Request, Response
 from fastapi.concurrency import asynccontextmanager
 from fastapi.responses import JSONResponse
+from httpx import AsyncClient
 
+from app.clients.deps import get_http_client, set_http_client
 from common.db.connection import ConnectionPool
 from common.db.deps import set_db_instance
 from common.queues.queue_factory import QueueFactory
 from common.queues.deps import set_queue_factory
 
 from app.tasks.setup_tasks import setup_tasks
-from app.exceptions import ApplicationException, NotFoundException
+from app.exceptions import (
+    ApplicationException,
+    NotAuthenticatedException,
+    NotFoundException,
+)
 from app.api import health_router, inventory_router
 from app.settings import settings
 
@@ -27,8 +33,10 @@ logging.basicConfig(level=settings.log)
 async def lifespan(app: FastAPI):
     await db.connect()
     await queue_factory.connect()
+    set_http_client(AsyncClient())
     await setup_tasks()
     yield
+    await get_http_client().aclose()
     await queue_factory.disconnect()
     await db.disconnect()
 
@@ -44,6 +52,8 @@ async def handle_exceptions(
         return await call_next(request)
     except NotFoundException as e:
         return JSONResponse(status_code=404, content={"message": str(e)})
+    except NotAuthenticatedException as e:
+        return JSONResponse(status_code=401, content={"message": str(e)})
     except ApplicationException as e:
         return JSONResponse(status_code=400, content={"message": str(e)})
 

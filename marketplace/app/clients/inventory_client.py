@@ -63,11 +63,16 @@ class InventoryClient:
         }
 
     async def set_stock(
-        self, product_id: int, request: SetStockRequest
+        self,
+        product_id: int,
+        token: str,
+        request: SetStockRequest,
     ) -> SetStockResponse:
         url = urllib.parse.urljoin(self.base_url, f"/stocks/{product_id}")
 
-        response = await self.client.post(url, json=request.model_dump())
+        response = await self.client.post(
+            url, json=request.model_dump(), headers={"Authorization": f"Bearer {token}"}
+        )
         print(response.json())
         response.raise_for_status()
 

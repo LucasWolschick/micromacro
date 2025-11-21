@@ -1,5 +1,6 @@
 import logging
 import os
+from pydantic import HttpUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ENV = os.getenv("ENV", "dev")
@@ -14,6 +15,8 @@ class Settings(BaseSettings):
     db_name: str
 
     queues_connection_string: str
+
+    vendors_api_url: HttpUrl
 
     log: int | str = logging.INFO
 

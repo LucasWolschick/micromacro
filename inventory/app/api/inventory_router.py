@@ -1,6 +1,11 @@
 from typing import Annotated
 from fastapi import APIRouter, Body, Depends, Path, Query
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from httpx import AsyncClient
 
+from app.clients.client_factory import ClientFactory
+from app.clients.deps import get_http_client
+from app.clients.vendors_client import ValidateTokenResponse
 from common.db.deps import get_db
 from common.db.connection import ConnectionPool
 
@@ -13,6 +18,15 @@ from app.use_cases.set_stock import SetStock, SetStockRequest
 from app.use_cases.create_warehouse import CreateWarehouse, CreateWarehouseRequest
 
 router = APIRouter(prefix="/stocks")
+bearer = HTTPBearer()
+
+
+async def auth(
+    client: Annotated[AsyncClient, Depends(get_http_client)],
+    token: Annotated[HTTPAuthorizationCredentials, Depends(bearer)],
+):
+    vendors = ClientFactory(client).vendors()
+    return await vendors.who_am_i(token.credentials)
 
 
 @router.get("/warehouses")
@@ -24,7 +38,9 @@ async def list_warehouses(db: Annotated[ConnectionPool, Depends(get_db)]):
 
 @router.post("/warehouses")
 async def create_warehouse(
-    db: Annotated[ConnectionPool, Depends(get_db)], warehouse: CreateWarehouseRequest
+    db: Annotated[ConnectionPool, Depends(get_db)],
+    warehouse: CreateWarehouseRequest,
+    _: Annotated[ValidateTokenResponse, Depends(auth)],
 ):
     warehouse_repo = WarehouseRepository(db)
     use_case = CreateWarehouse(warehouse_repo)
@@ -50,6 +66,7 @@ async def set_stock(
     product_id: Annotated[int, Path(alias="id")],
     warehouse_id: Annotated[int, Body()],
     stock: Annotated[float, Body()],
+    _: Annotated[ValidateTokenResponse, Depends(auth)],
 ):
     stocks_repo = StockRepository(db)
     warehouse_repo = WarehouseRepository(db)

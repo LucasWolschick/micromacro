@@ -16,6 +16,7 @@ class Settings(BaseSettings):
 
     catalog_api_url: HttpUrl
     inventory_api_url: HttpUrl
+    vendors_api_url: HttpUrl
 
     log: int | str = logging.INFO
 

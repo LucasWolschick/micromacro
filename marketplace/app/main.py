@@ -8,7 +8,11 @@ import httpx
 from common.db.connection import ConnectionPool
 from common.db.deps import set_db_instance
 
-from app.exceptions import ApplicationException, NotFoundException
+from app.exceptions import (
+    ApplicationException,
+    NotAuthenticatedException,
+    NotFoundException,
+)
 from app.settings import settings
 from app.api import health_router, products_api
 from app.clients.deps import get_http_client, set_http_client
@@ -39,6 +43,8 @@ async def handle_exceptions(
         return await call_next(request)
     except NotFoundException as e:
         return JSONResponse(status_code=404, content={"message": str(e)})
+    except NotAuthenticatedException as e:
+        return JSONResponse(status_code=401, content={"message": str(e)})
     except ApplicationException as e:
         return JSONResponse(status_code=400, content={"message": str(e)})
 

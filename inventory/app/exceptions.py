@@ -6,6 +6,10 @@ class NotFoundException(ApplicationException):
     pass
 
 
+class NotAuthenticatedException(ApplicationException):
+    pass
+
+
 class StockNotFoundException(NotFoundException):
     def __init__(self, product_id: int, warehouse_id: int):
         super().__init__(
