@@ -4,6 +4,8 @@ import Product from "./Product.jsx";
 import ProductDetails from "./ProductDetails.jsx";
 import AccountContext from "../login/AccountContext.js";
 
+import "./ProductListing.css";
+
 export default function ProductListing() {
   const [loadingState, setLoadingState] = useState("loading");
   const [productData, setProductData] = useState([]);
@@ -68,7 +70,6 @@ export default function ProductListing() {
 
   return (
     <>
-      <h2>Produtos em estoque</h2>
       {loadingState === "loading" ? (
         <p>Carregando produtos...</p>
       ) : loadingState === "failed" ? (

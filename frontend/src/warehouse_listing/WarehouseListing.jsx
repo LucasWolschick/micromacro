@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import AccountContext from "../login/AccountContext";
 
+import "./WarehouseListing.css";
+
 export default function WarehouseListing() {
   const [warehouseDataState, setWarehouseDataState] = useState("loading");
   const [warehouseData, setWarehouseData] = useState([]);
@@ -46,7 +48,6 @@ export default function WarehouseListing() {
 
   return (
     <>
-      <h2>Centros de distribuição</h2>
       {warehouseDataState === "loading" ? (
         <i>Carregando...</i>
       ) : (
@@ -70,13 +71,16 @@ export default function WarehouseListing() {
         <form method="dialog">
           <label htmlFor="nome">Nome: </label>
           <input
+            required
             type="text"
             name="nome"
             id="nome"
             value={warehouseName}
             onChange={(e) => setWarehouseName(e.target.value)}
           />
-          <button value="cancel">Cancelar</button>
+          <button value="cancel" formNoValidate>
+            Cancelar
+          </button>
           <button value="add">Adicionar</button>
         </form>
       </dialog>

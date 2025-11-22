@@ -1,6 +1,8 @@
 import { useContext, useState } from "react";
 import AccountContext from "../login/AccountContext";
 
+import "./ProductDetails.css";
+
 function ProductStockListing({ warehouse, sku, quantity, onEdited }) {
   const [editing, setEditing] = useState(false);
 
@@ -28,29 +30,32 @@ function ProductStockListing({ warehouse, sku, quantity, onEdited }) {
     }).then(() => onEdited());
   };
 
-  return (
-    <>
+  return account && editing ? (
+    <div className="product-stock-listing">
       <b>
         {warehouse.description} (D-{warehouse.id}):{" "}
       </b>
-      {account && editing ? (
-        <form action={onSubmitted}>
-          <input
-            type="number"
-            name="quantity"
-            id="quantity"
-            defaultValue={quantity}
-          />
-          <button type="submit">Atualizar</button>
-          <button onClick={() => setEditing(false)}>Cancelar</button>
-        </form>
-      ) : (
-        <>
-          {quantity} un.{" "}
-          {account && <button onClick={() => setEditing(true)}>Editar</button>}
-        </>
-      )}
-    </>
+      <form action={onSubmitted}>
+        <input
+          type="number"
+          name="quantity"
+          id="quantity"
+          defaultValue={quantity}
+        />
+        <button type="submit">Atualizar</button>
+        <button onClick={() => setEditing(false)}>Cancelar</button>
+      </form>
+    </div>
+  ) : (
+    <div className="product-stock-listing">
+      <b>
+        {warehouse.description} (D-{warehouse.id})
+      </b>
+      <div>
+        {quantity} un.{" "}
+        {account && <button onClick={() => setEditing(true)}>Editar</button>}
+      </div>
+    </div>
   );
 }
 
@@ -65,7 +70,7 @@ export default function ProductDetails({
     warehouses.set(warehouse.id, warehouse);
   });
   return (
-    <div>
+    <div className="product-details">
       <h2>Detalhes do produto</h2>
       <p>SKU-{product.sku}</p>
       <p>

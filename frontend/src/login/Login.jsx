@@ -1,9 +1,18 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router";
+
 import AccountContext from "./AccountContext";
+
+import "./Login.css";
 
 export default function Login({ setAccount }) {
   const account = useContext(AccountContext);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (account !== null) navigate("/");
+  }, [account]);
 
   const onLogin = (formData) => {
     const username = formData.get("username");
@@ -27,7 +36,7 @@ export default function Login({ setAccount }) {
   };
 
   return loading === false ? (
-    account === null ? (
+    account === null && (
       <form action={onLogin}>
         <label htmlFor="username">Usuário:</label>
         <input type="text" name="username" id="username" />
@@ -35,10 +44,6 @@ export default function Login({ setAccount }) {
         <input type="password" name="password" id="password" />
         <button>Entrar</button>
       </form>
-    ) : (
-      <div>
-        Olá, {account.user} <button onClick={() => logOut()}>Sair</button>
-      </div>
     )
   ) : (
     <p>Carregando...</p>

@@ -1,0 +1,12 @@
+.product {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 8px 0;
+}
+
+.details-button {
+  appearance: none;
+  border-radius: 99999999px;
+  aspect-ratio: 1 / 1;
+}

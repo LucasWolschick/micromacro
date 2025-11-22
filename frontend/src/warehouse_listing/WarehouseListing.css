@@ -1,0 +1,8 @@
+.warehouse-listing ul li {
+  padding: 8px 0;
+}
+
+.warehouse-listing > button {
+  display: block;
+  margin: 0 auto;
+}

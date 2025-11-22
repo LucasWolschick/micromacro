@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { Outlet, Route, Routes } from "react-router";
 
-import ProductListing from "./product_listing/ProductListing.jsx";
-import WarehouseListing from "./warehouse_listing/WarehouseListing.jsx";
 import AccountContext from "./login/AccountContext.js";
-import Login from "./login/Login.jsx";
+import LoginPage from "./login/LoginPage.jsx";
+import Topbar from "./Topbar.jsx";
+import ProductListingPage from "./product_listing/ProductListingPage.jsx";
+import WarehouseListingPage from "./warehouse_listing/WarehouseListingPage.jsx";
 
 export default function App() {
   const [account, setAccount] = useState(() => {
@@ -27,13 +29,20 @@ export default function App() {
   };
 
   return (
-    <>
-      <AccountContext value={account}>
-        <h1>Micromacro</h1>
-        <Login setAccount={(account) => updateAccount(account)} />
-        <WarehouseListing />
-        <ProductListing />
-      </AccountContext>
-    </>
+    <AccountContext value={account}>
+      <Topbar setAccount={updateAccount} />
+      <Outlet />
+      <Routes>
+        <Route index element={<ProductListingPage />} />
+        <Route path="products" element={<ProductListingPage />} />
+        <Route
+          path="login"
+          element={
+            <LoginPage setAccount={(account) => updateAccount(account)} />
+          }
+        />
+        <Route path="warehouses" element={<WarehouseListingPage />} />
+      </Routes>
+    </AccountContext>
   );
 }
