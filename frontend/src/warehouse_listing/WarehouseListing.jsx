@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useContext } from "react";
 import AccountContext from "../login/AccountContext";
 
 import "./WarehouseListing.css";
-import { listWarehouses } from "../marketplace_api";
+import { listWarehouses, createWarehouse } from "../marketplace_api";
 
 export default function WarehouseListing() {
   const [warehouseDataState, setWarehouseDataState] = useState("loading");

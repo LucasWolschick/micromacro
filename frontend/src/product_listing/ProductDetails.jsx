@@ -19,6 +19,7 @@ function ProductStockListing({ warehouse, sku, quantity, onEdited }) {
     if (quantity < 0) return;
 
     updateStock({
+      sku,
       token: account.token,
       warehouseId: warehouse.id,
       quantity,

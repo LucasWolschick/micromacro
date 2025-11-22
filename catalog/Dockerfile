@@ -14,6 +14,3 @@ COPY ./catalog /app/catalog
 WORKDIR /app/catalog
 
 CMD ["fastapi", "run", "app/main.py", "--host", "0.0.0.0", "--port", "8000"]
-
-HEALTHCHECK --interval=10s --timeout=3s --retries=3 \
-    CMD curl -f https://localhost:8000/health || exit 1

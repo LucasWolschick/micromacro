@@ -10,7 +10,7 @@ export function login({ username, password }) {
   }).then((result) => result.json());
 }
 
-export function updateStock({ token, warehouseId, quantity }) {
+export function updateStock({ sku, token, warehouseId, quantity }) {
   return fetch(`${MARKETPLACE_BASE_URL}/products/${sku}/stock`, {
     method: "PUT",
     headers: {
