@@ -8,6 +8,7 @@ class LoginRequest(BaseModel):
 
 
 class LoginResponse(BaseModel):
+    user: str
     token: str
 
 
@@ -19,4 +20,4 @@ class Login:
         response = await self.vendors_client.get_token(
             request.user, request.password.get_secret_value()
         )
-        return LoginResponse(token=response.access_token)
+        return LoginResponse(user=request.user, token=response.access_token)

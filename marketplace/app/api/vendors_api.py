@@ -18,9 +18,13 @@ async def login(
 ):
     client_factory = ClientFactory(http_client)
     use_case = Login(client_factory.vendors())
-    token = await use_case.run(
+    response = await use_case.run(
         LoginRequest(
             user=credentials.username, password=SecretStr(credentials.password)
         )
     )
-    return {"access_token": token.token, "token_type": "bearer"}
+    return {
+        "access_token": response.token,
+        "token_type": "bearer",
+        "user": response.user,
+    }
