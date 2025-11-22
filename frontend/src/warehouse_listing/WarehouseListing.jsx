@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useContext } from "react";
 import AccountContext from "../login/AccountContext";
 
 import "./WarehouseListing.css";
+import { listWarehouses } from "../marketplace_api";
 
 export default function WarehouseListing() {
   const [warehouseDataState, setWarehouseDataState] = useState("loading");
@@ -14,12 +15,8 @@ export default function WarehouseListing() {
 
   const fetchWarehouses = () => {
     setWarehouseDataState("loading");
-    fetch("http://localhost:8004/inventory/warehouses")
-      .then((response) => response.json())
-      .then((result) => {
-        setWarehouseData(result);
-        setWarehouseDataState("loaded");
-      })
+    listWarehouses()
+      .then((warehouses) => setWarehouseData(warehouses))
       .catch(() => setWarehouseDataState("failed"));
   };
 
@@ -30,13 +27,9 @@ export default function WarehouseListing() {
 
     if (warehouseName.trim() === "") return;
 
-    fetch("http://localhost:8004/inventory/warehouses", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${account.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ description: warehouseName.trim() }),
+    createWarehouse({
+      token: account.token,
+      description: warehouseName.trim(),
     }).then(() => fetchWarehouses());
 
     setWarehouseName("");

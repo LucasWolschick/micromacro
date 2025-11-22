@@ -5,6 +5,11 @@ import ProductDetails from "./ProductDetails.jsx";
 import AccountContext from "../login/AccountContext.js";
 
 import "./ProductListing.css";
+import {
+  addProduct,
+  listProducts,
+  listWarehouses,
+} from "../marketplace_api.js";
 
 export default function ProductListing() {
   const [loadingState, setLoadingState] = useState("loading");
@@ -22,38 +27,22 @@ export default function ProductListing() {
   const fetchData = () => {
     setLoadingState("loading");
     Promise.all([
-      fetch("http://localhost:8004/products")
-        .then((response) => response.json())
-        .then((json) => {
-          setProductData(json);
-        }),
-      fetch("http://localhost:8004/inventory/warehouses")
-        .then((response) => response.json())
-        .then((result) => {
-          setWarehouseData(result);
-        }),
+      listProducts().then((json) => setProductData(json)),
+      listWarehouses().then((result) => setWarehouseData(result)),
     ])
       .then(() => setLoadingState("loaded"))
       .catch(() => setLoadingState("failed"));
   };
 
-  const addProduct = (event) => {
+  const onAddProduct = (event) => {
     if (event.target.returnValue !== "add") return;
     if (account === null) return;
     if (productName.trim() === "") return;
     if (productPrice < 0.0) return;
 
-    fetch("http://localhost:8004/products", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${account.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        description: productName,
-        price: productPrice,
-      }),
-    }).then(() => fetchData());
+    addProduct({ token: account.token, productName, productPrice }).then(() =>
+      fetchData()
+    );
 
     setProductName("");
     setProductPrice(0.0);
@@ -102,7 +91,7 @@ export default function ProductListing() {
             />
           )}
 
-          <dialog ref={dialog} onClose={addProduct}>
+          <dialog ref={dialog} onClose={onAddProduct}>
             <h2>Adicionar produto</h2>
             <form method="dialog">
               <label htmlFor="description">Nome:</label>

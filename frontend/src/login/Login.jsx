@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 
+import { login } from "../marketplace_api";
 import AccountContext from "./AccountContext";
 
 import "./Login.css";
@@ -19,14 +20,7 @@ export default function Login({ setAccount }) {
     const password = formData.get("password");
 
     setLoading(true);
-    fetch("http://localhost:8004/login", {
-      method: "POST",
-      body: new URLSearchParams({
-        username,
-        password,
-      }),
-    })
-      .then((result) => result.json())
+    login({ username, password })
       .then((data) => setAccount({ user: data.user, token: data.access_token }))
       .then(() => setLoading(false));
   };

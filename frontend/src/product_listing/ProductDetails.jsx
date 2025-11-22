@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import AccountContext from "../login/AccountContext";
 
 import "./ProductDetails.css";
+import { updateStock } from "../marketplace_api";
 
 function ProductStockListing({ warehouse, sku, quantity, onEdited }) {
   const [editing, setEditing] = useState(false);
@@ -17,16 +18,10 @@ function ProductStockListing({ warehouse, sku, quantity, onEdited }) {
 
     if (quantity < 0) return;
 
-    fetch(`http://localhost:8004/products/${sku}/stock`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${account.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        warehouse_id: warehouse.id,
-        quantity,
-      }),
+    updateStock({
+      token: account.token,
+      warehouseId: warehouse.id,
+      quantity,
     }).then(() => onEdited());
   };
 
