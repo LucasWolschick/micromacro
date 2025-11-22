@@ -17,6 +17,7 @@ export default function WarehouseListing() {
     setWarehouseDataState("loading");
     listWarehouses()
       .then((warehouses) => setWarehouseData(warehouses))
+      .then(() => setWarehouseDataState("loaded"))
       .catch(() => setWarehouseDataState("failed"));
   };
 
