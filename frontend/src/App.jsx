@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+import ProductListing from "./product_listing/ProductListing.jsx";
+import WarehouseListing from "./warehouse_listing/WarehouseListing.jsx";
+import AccountContext from "./login/AccountContext.js";
+import Login from "./login/Login.jsx";
+
+export default function App() {
+  const [account, setAccount] = useState(() => {
+    try {
+      const val = sessionStorage.getItem("userCredentials");
+      return val ? JSON.parse(val) : null;
+    } catch (error) {
+      console.error("Error retrieving logged in user:", error);
+      sessionStorage.removeItem("userCredentials");
+      return null;
+    }
+  });
+
+  const updateAccount = (account) => {
+    if (account === null) {
+      sessionStorage.removeItem("userCredentials");
+    } else {
+      sessionStorage.setItem("userCredentials", JSON.stringify(account));
+    }
+    setAccount(account);
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <AccountContext value={account}>
+        <h1>Micromacro</h1>
+        <Login setAccount={(account) => updateAccount(account)} />
+        <WarehouseListing />
+        <ProductListing />
+      </AccountContext>
     </>
-  )
+  );
 }
-
-export default App
