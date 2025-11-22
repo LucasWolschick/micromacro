@@ -1,6 +1,10 @@
 from typing import Annotated
 from fastapi import APIRouter, Body, Depends, Path, Query
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import (
+    HTTPAuthorizationCredentials,
+    HTTPBearer,
+    OAuth2PasswordBearer,
+)
 from httpx import AsyncClient
 
 from app.clients.deps import get_http_client
@@ -16,7 +20,7 @@ from app.use_cases.update_stock import UpdateStock, UpdateStockRequest
 
 
 router = APIRouter()
-bearer = HTTPBearer()
+bearer = OAuth2PasswordBearer("/login")
 
 
 @router.get("/products")
@@ -49,7 +53,7 @@ async def update_stock(
     product_id: Annotated[int, Path(alias="id")],
     warehouse_id: Annotated[int, Body()],
     quantity: Annotated[float, Body()],
-    token: Annotated[HTTPAuthorizationCredentials, Depends(bearer)],
+    token: Annotated[str, Depends(bearer)],
 ):
     factory = ClientFactory(api_client)
     use_case = UpdateStock(factory.catalog(), factory.inventory())
@@ -57,7 +61,7 @@ async def update_stock(
         UpdateStockRequest(
             product_id=product_id, warehouse_id=warehouse_id, quantity=quantity
         ),
-        token.credentials,
+        token,
     )
 
 
@@ -74,9 +78,9 @@ async def get_product(
 @router.post("/products")
 async def add_product(
     api_client: Annotated[AsyncClient, Depends(get_http_client)],
-    token: Annotated[HTTPAuthorizationCredentials, Depends(bearer)],
+    token: Annotated[str, Depends(bearer)],
     request: AddProductRequest,
 ):
     factory = ClientFactory(api_client)
     use_case = AddProduct(factory.catalog())
-    return await use_case.run(token.credentials, request)
+    return await use_case.run(token, request)

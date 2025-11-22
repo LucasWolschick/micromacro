@@ -15,7 +15,7 @@ from app.exceptions import (
     NotFoundException,
 )
 from app.settings import settings
-from app.api import health_router, inventory_api, products_api
+from app.api import health_router, inventory_api, products_api, vendors_api
 from app.clients.deps import get_http_client, set_http_client
 
 db = ConnectionPool(settings.connection_string, settings.db_name)
@@ -70,3 +70,4 @@ async def handle_exceptions(
 app.include_router(health_router.router)
 app.include_router(products_api.router)
 app.include_router(inventory_api.router)
+app.include_router(vendors_api.router)
