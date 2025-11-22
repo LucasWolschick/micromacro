@@ -1,10 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, Body, Depends, Path, Query
-from fastapi.security import (
-    HTTPAuthorizationCredentials,
-    HTTPBearer,
-    OAuth2PasswordBearer,
-)
+from fastapi.security import OAuth2PasswordBearer
 from httpx import AsyncClient
 
 from app.clients.deps import get_http_client

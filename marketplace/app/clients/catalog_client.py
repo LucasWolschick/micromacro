@@ -38,7 +38,7 @@ class CatalogClient:
     async def add_product(
         self, token: str, product: AddProductRequest
     ) -> AddProductResponse:
-        url = urllib.parse.urljoin(self.base_url, "/products")
+        url = urllib.parse.urljoin(self.base_url, "/products/")
 
         response = await self.client.post(
             url, json=product.model_dump(), headers={"Authorization": f"Bearer {token}"}

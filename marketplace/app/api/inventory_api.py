@@ -1,10 +1,6 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends
-from fastapi.security import (
-    HTTPAuthorizationCredentials,
-    HTTPBearer,
-    OAuth2PasswordBearer,
-)
+from fastapi import APIRouter, Body, Depends
+from fastapi.security import OAuth2PasswordBearer
 from httpx import AsyncClient
 
 from app.clients.client_factory import ClientFactory
@@ -27,7 +23,7 @@ async def get_warehouses(http_client: Annotated[AsyncClient, Depends(get_http_cl
 @router.post("/warehouses")
 async def add_warehouse(
     http_client: Annotated[AsyncClient, Depends(get_http_client)],
-    request: AddWarehouseRequest,
+    request: Annotated[AddWarehouseRequest, Body()],
     token: Annotated[str, Depends(bearer)],
 ):
     client_factory = ClientFactory(http_client)
